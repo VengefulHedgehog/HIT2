@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import '../index.scss'
 
 const LanguageSwitcher: React.FC = () => {
     const { i18n } = useTranslation();
@@ -10,7 +11,7 @@ const LanguageSwitcher: React.FC = () => {
     };
 
     return (
-        <button onClick={toggleLanguage}>
+        <button onClick={toggleLanguage} className="language-switcher center">
             {i18n.language === 'en' ? 'RU' : 'EN'}
         </button>
     );

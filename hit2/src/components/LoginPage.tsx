@@ -6,6 +6,7 @@ import H from "../assets/svg/H.svg";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { url_hit_api } from "../dataSource/dataSetting";
 import { useTranslation } from 'react-i18next';
+import '../style/LoginPage.scss';
 
 const LoginPage: React.FC = () => {
         const { t } = useTranslation();
@@ -41,7 +42,6 @@ const LoginPage: React.FC = () => {
                 }
                 } catch (error) {
                 console.error('Ошибка при авторизации:', error);
-                alert('Ошибка соединения с сервером');
                 } finally {
                 setLoading(false);
                 }
@@ -49,7 +49,7 @@ const LoginPage: React.FC = () => {
 
         return (
                 <div className="w-100 h-100 d-flex flex-row">
-                <div className="center flex-column" style={{ minWidth: '450px', width: '45%' }}>
+                <div className="center flex-column login-side">
                         <div style={{ minWidth: '400px' }}>
                         <div className="d-flex flex-row align-items-between">
                                 <h2 className="w-100 text-start mb-5">{t('Авторизация')}</h2>
@@ -57,38 +57,38 @@ const LoginPage: React.FC = () => {
                         </div>
                         <Form name="login" initialValues={{ remember: true }} layout="vertical">
                                 <div className="mb-3">
-                                <label className="mb-2">Логин</label>
-                                <Form.Item name="username" rules={[{ required: true, message: 'Введите ваш логин!' }]}>
-                                        <Input onChange={(e) => setLogin(e.target.value)} />
-                                </Form.Item>
+                                <label className="mb-2">{t('Логин')}</label>
+                                        <Form.Item name="username" rules={[{ required: true, message: 'Введите ваш логин' }]}>
+                                                <Input onChange={(e) => setLogin(e.target.value)} />
+                                        </Form.Item>
                                 </div>
                                 <div>
-                                <label className="mb-2">Пароль</label>
-                                <Form.Item name="password" rules={[{ required: true, message: 'Введите ваш пароль!' }]}>
-                                        <Input.Password onChange={(e) => setPassword(e.target.value)} />
-                                </Form.Item>
-                                <Form.Item name="rememberMe" valuePropName="checked">
-                                        <Checkbox onChange={(e) => setRememberMe(e.target.checked)}>Запомнить меня</Checkbox>
-                                </Form.Item>
-                                <Form.Item>
-                                        <Button 
-                                        onClick={handleSubmit} 
-                                        className="btn-40" 
-                                        type="primary" 
-                                        htmlType="submit" 
-                                        loading={loading} 
-                                        block 
-                                        disabled={!login || !password}>
-                                        Войти
-                                        </Button>
-                                </Form.Item>
+                                <label className="mb-2">{t('Пароль')}</label>
+                                        <Form.Item name="password" rules={[{ required: true, message: 'Введите ваш пароль' }]}>
+                                                <Input.Password onChange={(e) => setPassword(e.target.value)} />
+                                        </Form.Item>
+                                        <Form.Item name="rememberMe" valuePropName="checked">
+                                                <Checkbox onChange={(e) => setRememberMe(e.target.checked)}>{t('Запомнить меня')}</Checkbox>
+                                        </Form.Item>
+                                        <Form.Item>
+                                                <Button 
+                                                onClick={handleSubmit} 
+                                                className="btn-40" 
+                                                type="primary" 
+                                                htmlType="submit" 
+                                                loading={loading} 
+                                                block 
+                                                disabled={!login || !password}>
+                                                {t('Войти')}
+                                                </Button>
+                                        </Form.Item>
                                 </div>
                         </Form>
                         </div>
                 </div>
-                <div className="h-100 overflow-hidden position-relative" style={{ width: '55%' }}>
+                <div className="h-100 overflow-hidden position-relative picture-side">
                         <img className="w-100 h-100" src={auth} alt="Logo" />
-                        <img className="position-absolute" src={H} alt="H" style={{ top: '80px', right: '80px', width: '65px', height: '65px' }} />
+                        <img className="position-absolute picture-side-logo" src={H} alt="H"/>
                 </div>
                 </div>
         );

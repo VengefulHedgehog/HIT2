@@ -2,6 +2,16 @@ body {
     font-family: Roboto !important;
 }
 
+.language-switcher{
+    background-color: white;
+    color: #1890FF;
+    font-size: 1rem;
+    width: 35px;
+    height: 35px;
+    border-radius: 8px;
+    border: 1px solid #1890FF;
+}
+
 .center{
     display: flex;
     align-items: center;
