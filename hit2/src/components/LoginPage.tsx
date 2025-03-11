@@ -1,61 +1,95 @@
-import React, { useState, ChangeEvent, FormEvent } from 'react';
+import React, { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {Input, Form, Button} from "antd";
+import { Input, Form, Button, Checkbox } from 'antd';
+import auth from "../assets/img/auth.jpg";
+import H from "../assets/svg/H.svg";
+import LanguageSwitcher from "./LanguageSwitcher";
+import { url_hit_api } from "../dataSource/dataSetting";
+import { useTranslation } from 'react-i18next';
 
 const LoginPage: React.FC = () => {
-        const [username, setUsername] = useState<string>('');
+        const { t } = useTranslation();
+        const [login, setLogin] = useState<string>('');
         const [password, setPassword] = useState<string>('');
-        const navigate  = useNavigate();
+        const [rememberMe, setRememberMe] = useState<boolean>(false);
+        const [loading, setLoading] = useState<boolean>(false);
+        const navigate = useNavigate();
 
-        const handleSubmit = (e: FormEvent) => {
+        const handleSubmit = async (e: FormEvent) => {
                 e.preventDefault();
-
-                // Простейшая валидация
-                if (username === 'admin' && password === 'password') {
-                        // Если логин и пароль совпадают, перенаправляем на главную страницу
+                setLoading(true);
+                
+                try {
+                const response = await fetch(url_hit_api + 'Login/Auth', {
+                        method: 'POST',
+                        headers: {
+                        'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                                login,
+                                password,
+                                rememberMe: rememberMe.toString(),
+                        }),
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.Code === 200) {
                         navigate('/home');
                 } else {
-                        alert('Неверный логин или пароль');
+                        alert(data.ErrorText || 'Ошибка авторизации');
                 }
-        };
-
-        const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) => {
-                setUsername(e.target.value);
-        };
-
-        const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
-                setPassword(e.target.value);
+                } catch (error) {
+                console.error('Ошибка при авторизации:', error);
+                alert('Ошибка соединения с сервером');
+                } finally {
+                setLoading(false);
+                }
         };
 
         return (
                 <div className="w-100 h-100 d-flex flex-row">
-                        <div className="w-50 center flex-column">
-                                <div style={{ minWidth: '400px'}}>
-                                        <h2 className="text-start">Авторизация</h2>
-                                        <Form name="login" initialValues={{ remember: true }} onFinish={handleSubmit} layout="vertical">
-                                                <div className="mb-3">
-                                                        <label className="mb-2">Логин</label>
-                                                        <Form.Item name="username" rules={[{ required: true, message: 'Введите ваш логин!' }]}>
-                                                                <Input onChange={handleUsernameChange} />
-                                                        </Form.Item>
-                                                </div>
-                                                <div>
-                                                <label className="mb-2">Пароль</label>
-                                                        <Form.Item name="password" rules={[{ required: true, message: 'Введите ваш пароль!' }]}>
-                                                                <Input.Password onChange={handlePasswordChange} />
-                                                        </Form.Item>
-                                                        <Form.Item>
-                                                                <Button className="btn-40" type="primary" htmlType="submit" block>
-                                                                        Войти
-                                                                </Button>
-                                                        </Form.Item>
-                                                </div>
-                                        </Form>
-                                        </div>
-                                </div>
-                        <div>
-                                <img src="./../assets/img/auth.jpg" alt="" />
+                <div className="center flex-column" style={{ minWidth: '450px', width: '45%' }}>
+                        <div style={{ minWidth: '400px' }}>
+                        <div className="d-flex flex-row align-items-between">
+                                <h2 className="w-100 text-start mb-5">{t('Авторизация')}</h2>
+                                <LanguageSwitcher />
                         </div>
+                        <Form name="login" initialValues={{ remember: true }} layout="vertical">
+                                <div className="mb-3">
+                                <label className="mb-2">Логин</label>
+                                <Form.Item name="username" rules={[{ required: true, message: 'Введите ваш логин!' }]}>
+                                        <Input onChange={(e) => setLogin(e.target.value)} />
+                                </Form.Item>
+                                </div>
+                                <div>
+                                <label className="mb-2">Пароль</label>
+                                <Form.Item name="password" rules={[{ required: true, message: 'Введите ваш пароль!' }]}>
+                                        <Input.Password onChange={(e) => setPassword(e.target.value)} />
+                                </Form.Item>
+                                <Form.Item name="rememberMe" valuePropName="checked">
+                                        <Checkbox onChange={(e) => setRememberMe(e.target.checked)}>Запомнить меня</Checkbox>
+                                </Form.Item>
+                                <Form.Item>
+                                        <Button 
+                                        onClick={handleSubmit} 
+                                        className="btn-40" 
+                                        type="primary" 
+                                        htmlType="submit" 
+                                        loading={loading} 
+                                        block 
+                                        disabled={!login || !password}>
+                                        Войти
+                                        </Button>
+                                </Form.Item>
+                                </div>
+                        </Form>
+                        </div>
+                </div>
+                <div className="h-100 overflow-hidden position-relative" style={{ width: '55%' }}>
+                        <img className="w-100 h-100" src={auth} alt="Logo" />
+                        <img className="position-absolute" src={H} alt="H" style={{ top: '80px', right: '80px', width: '65px', height: '65px' }} />
+                </div>
                 </div>
         );
 };

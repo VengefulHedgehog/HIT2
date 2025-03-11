@@ -6,5 +6,8 @@ export default defineConfig({
     plugins: [plugin()],
     server: {
         port: 54653,
+    },
+    css: {
+        devSourcemap: false
     }
 })
